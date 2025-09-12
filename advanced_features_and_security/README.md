@@ -18,3 +18,11 @@ Three groups manage these:
 Views are protected with:
 ```python
 @permission_required('bookshelf.can_edit', raise_exception=True)
+
+## Security Best Practices
+
+- DEBUG disabled in production  
+- XSS filters, clickjacking and MIME-sniff protections enabled  
+- CSRF tokens in all forms  
+- ORM usage prevents SQL injection  
+- Content Security Policy restricts external assets

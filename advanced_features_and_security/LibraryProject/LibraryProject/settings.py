@@ -23,7 +23,37 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-qgm764cxjf=fwvjrv)i8nboyec$y9pm2)2dh*^fs6$0jgr@7-3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Prevent debugging info leaking in production
+
+DEBUG = True  # Flip to False in production
+
+# Always-on browser protections
+SECURE_BROWSER_XSS_FILTER    = True
+X_FRAME_OPTIONS              = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF  = True
+
+# Only enforce SSL/cookie security in production
+# (when DEBUG is False)
+SESSION_COOKIE_SECURE    = not DEBUG
+CSRF_COOKIE_SECURE       = not DEBUG
+SECURE_SSL_REDIRECT      = not DEBUG
+
+if not DEBUG:
+    # HSTS only makes sense once everything is HTTPS
+    SECURE_HSTS_SECONDS           = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD           = True
+else:
+    # In dev, don’t break runserver with HTTPS redirects
+    SECURE_HSTS_SECONDS            = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD            = False
+
+# Content Security Policy settings
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC  = ("'self'", 'cdnjs.cloudflare.com')
+CSP_STYLE_SRC   = ("'self'", 'fonts.googleapis.com')
+CSP_IMG_SRC     = ("'self'", 'data:')
 
 ALLOWED_HOSTS = []
 
@@ -45,6 +75,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

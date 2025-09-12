@@ -15,6 +15,17 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import permission_required
 from .models import UserProfile
 
+def home(request):
+    # render as usual
+    response = render(request, 'relationship_app/home.html', {})
+    # add one-off CSP header
+    response['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "img-src 'self' data:; "
+        "script-src 'self'; "
+        "style-src 'self';"
+    )
+    return response
 # Function-based view to list all books
 def list_books(request):
     books = Book.objects.all()
