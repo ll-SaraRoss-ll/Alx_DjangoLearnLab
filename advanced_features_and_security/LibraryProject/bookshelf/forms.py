@@ -9,3 +9,13 @@ class BookForm(forms.ModelForm):
 
 class BookSearchForm(forms.Form):
     q = forms.CharField(max_length=100, required=False)
+
+class ExampleForm(forms.Form):
+    """
+    Simple example form to demonstrate CSRF protection.
+    """
+    sample_text = forms.CharField(
+        max_length=100,
+        label="Sample Text",
+        help_text="Enter any text."
+    )
