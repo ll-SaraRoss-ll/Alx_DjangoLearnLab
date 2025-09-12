@@ -1,0 +1,13 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+
+# Django SQLite database
+db.sqlite3
+
+# Media uploads
+media/
