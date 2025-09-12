@@ -22,8 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qgm764cxjf=fwvjrv)i8nboyec$y9pm2)2dh*^fs6$0jgr@7-3'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# Prevent debugging info leaking in production
 
 # SECURITY: Always keep DEBUG=False in production
 DEBUG = False  
@@ -38,6 +36,11 @@ SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000  
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  
 SECURE_HSTS_PRELOAD = True  
+
+# ---------------------------------------------------------
+# Trust the X-Forwarded-Proto header set by your proxy
+# ---------------------------------------------------------
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ---------------------------------------------------------
 # 2. Secure cookie settings
