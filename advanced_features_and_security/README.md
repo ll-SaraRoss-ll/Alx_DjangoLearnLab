@@ -26,3 +26,17 @@ Views are protected with:
 - CSRF tokens in all forms  
 - ORM usage prevents SQL injection  
 - Content Security Policy restricts external assets
+
+## HTTPS & Secure Redirects
+
+1. **settings.py**  
+   - `SECURE_SSL_REDIRECT = True` redirects all HTTP to HTTPS.  
+   - `SECURE_HSTS_SECONDS = 31536000`, `INCLUDE_SUBDOMAINS`, `PRELOAD` enable HSTS.  
+   - `SESSION_COOKIE_SECURE` & `CSRF_COOKIE_SECURE` ensure cookies use HTTPS only.  
+   - `X_FRAME_OPTIONS='DENY'`, `SECURE_CONTENT_TYPE_NOSNIFF`, `SECURE_BROWSER_XSS_FILTER` add clickjacking, MIME-sniff, and XSS protections.  
+   - Development override via `if DEBUG:` block disables HTTPS enforcement locally.
+
+2. **Deployment (Nginx)**  
+   - HTTP→HTTPS redirect server block.  
+   - SSL server block with Let’s Encrypt cert paths.  
+   - Proxy headers for correct `X-Forwarded-Proto`.  

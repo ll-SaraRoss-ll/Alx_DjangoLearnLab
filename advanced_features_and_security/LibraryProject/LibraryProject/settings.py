@@ -25,29 +25,51 @@ SECRET_KEY = 'django-insecure-qgm764cxjf=fwvjrv)i8nboyec$y9pm2)2dh*^fs6$0jgr@7-3
 # SECURITY WARNING: don't run with debug turned on in production!
 # Prevent debugging info leaking in production
 
-DEBUG = True  # Flip to False in production
+# SECURITY: Always keep DEBUG=False in production
+DEBUG = False  
 
-# Always-on browser protections
-SECURE_BROWSER_XSS_FILTER    = True
-X_FRAME_OPTIONS              = 'DENY'
-SECURE_CONTENT_TYPE_NOSNIFF  = True
+# ---------------------------------------------------------
+# 1. Enforce HTTPS redirects and HSTS
+# ---------------------------------------------------------
+# Redirect all HTTP → HTTPS
+SECURE_SSL_REDIRECT = True
 
-# Only enforce SSL/cookie security in production
-# (when DEBUG is False)
-SESSION_COOKIE_SECURE    = not DEBUG
-CSRF_COOKIE_SECURE       = not DEBUG
-SECURE_SSL_REDIRECT      = not DEBUG
+# Instruct browsers to only use HTTPS for the next year
+SECURE_HSTS_SECONDS = 31536000  
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  
+SECURE_HSTS_PRELOAD = True  
 
-if not DEBUG:
-    # HSTS only makes sense once everything is HTTPS
-    SECURE_HSTS_SECONDS           = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD           = True
-else:
-    # In dev, don’t break runserver with HTTPS redirects
+# ---------------------------------------------------------
+# 2. Secure cookie settings
+# ---------------------------------------------------------
+# Cookies only sent over HTTPS
+SESSION_COOKIE_SECURE = True  
+CSRF_COOKIE_SECURE    = True  
+
+# ---------------------------------------------------------
+# 3. Additional secure headers
+# ---------------------------------------------------------
+# Enable browser XSS filter
+SECURE_BROWSER_XSS_FILTER   = True  
+
+# Prevent MIME type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True  
+
+# Disallow framing to prevent clickjacking
+X_FRAME_OPTIONS             = 'DENY'  
+
+# ---------------------------------------------------------
+# 4. Development Overrides
+# ---------------------------------------------------------
+# When DEBUG=True (development), disable HTTPS‐only flags
+if DEBUG:
+    SECURE_SSL_REDIRECT   = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE    = False
     SECURE_HSTS_SECONDS            = 0
     SECURE_HSTS_INCLUDE_SUBDOMAINS = False
     SECURE_HSTS_PRELOAD            = False
+
 
 # Content Security Policy settings
 CSP_DEFAULT_SRC = ("'self'",)
