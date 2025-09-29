@@ -203,3 +203,12 @@ Examples:
 
 ```bash
 curl "http://localhost:8000/api/books/?search=django&ordering=-publication_year"
+
+## Testing
+
+We use Django’s built-in `TestCase` and DRF’s `APITestCase` classes to verify our API endpoints.
+
+### Running Tests
+
+```bash
+python manage.py test api
