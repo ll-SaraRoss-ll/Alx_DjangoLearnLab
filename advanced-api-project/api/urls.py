@@ -1,12 +1,16 @@
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
 from .views import (
-    BookListCreateView,
-    BookRetrieveUpdateDestroyView,
+    BookListView,
+    BookDetailView,
+    BookCreateView,
+    BookUpdateView,
+    BookDeleteView,
 )
 
 urlpatterns = [
-    path('books/', BookListCreateView.as_view(), name='book-list-create'),
-    path('books/<int:pk>/', BookRetrieveUpdateDestroyView.as_view(), name='book-detail'),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('books/',         BookListView .as_view(), name='book-list'),
+    path('books/<int:pk>/',BookDetailView.as_view(), name='book-detail'),
+    path('books/',         BookCreateView.as_view(), name='book-create'),
+    path('books/<int:pk>/',BookUpdateView.as_view(), name='book-update'),
+    path('books/<int:pk>/',BookDeleteView.as_view(), name='book-delete'),
 ]
