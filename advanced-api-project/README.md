@@ -145,4 +145,37 @@ Register models in `api/admin.py`, then use the admin UI at `http://localhost:80
   "Note": "For next steps, implement views, URL routing, filtering, searching, ordering, and comprehensive unit tests."
 }
 ```
-```
+
+## API Views
+
+### BookListCreateView
+
+- Endpoint: `GET  /api/books/`  
+  - Description: retrieve all books  
+  - Permissions: none (public)  
+- Endpoint: `POST /api/books/`  
+  - Description: create a new book  
+  - Permissions: authenticated users only  
+  - Payload example:  
+    ```json
+    {
+      "title": "Django Unleashed",
+      "publication_year": 2020,
+      "author": 1
+    }
+    ```
+
+### BookRetrieveUpdateDestroyView
+
+- Endpoint: `GET    /api/books/<pk>/`  
+  - Description: retrieve a single book  
+  - Permissions: none (public)  
+- Endpoint: `PUT    /api/books/<pk>/`  
+  - Description: full update of a book  
+  - Permissions: authenticated users only  
+- Endpoint: `PATCH  /api/books/<pk>/`  
+  - Description: partial update  
+  - Permissions: authenticated users only  
+- Endpoint: `DELETE /api/books/<pk>/`  
+  - Description: remove a book  
+  - Permissions: authenticated users only  
