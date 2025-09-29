@@ -179,3 +179,27 @@ Register models in `api/admin.py`, then use the admin UI at `http://localhost:80
 - Endpoint: `DELETE /api/books/<pk>/`  
   - Description: remove a book  
   - Permissions: authenticated users only  
+
+### Filtering, Searching, and Ordering
+
+**Endpoint:** `GET /api/books/`
+
+- **Filtering:**  
+  - `?title=ExactTitle`  
+  - `?title__icontains=substring`  
+  - `?publication_year__gte=YYYY`  
+  - `?publication_year__lte=YYYY`  
+  - `?author__name=AuthorName`
+
+- **Searching:**  
+  - `?search=keyword` (searches both `title` and `author.name`)
+
+- **Ordering:**  
+  - `?ordering=title`  
+  - `?ordering=-publication_year`  
+  - `?ordering=author__name`
+
+Examples:
+
+```bash
+curl "http://localhost:8000/api/books/?search=django&ordering=-publication_year"
