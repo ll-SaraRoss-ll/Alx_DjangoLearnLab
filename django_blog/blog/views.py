@@ -28,6 +28,12 @@ class PostDetailView(DetailView):
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()  # ✅ Add this line
+        context['form'] = CommentForm()  # Optional: preload comment form
+        return context
+
 # 3. Create a post (authenticated only)
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -37,6 +43,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('blog:post-detail', kwargs={'pk': self.object.pk})
 
 # 4. Update a post (author only)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -111,7 +120,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     template_name = 'blog/comment_form.html'
 
     def form_valid(self, form):
-        post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
         form.instance.post = post
         form.instance.author = self.request.user
         return super().form_valid(form)

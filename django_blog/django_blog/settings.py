@@ -40,8 +40,12 @@ INSTALLED_APPS = [
     'taggit',
     'blog',
 ]
+LOGIN_URL = 'blog:login'
 LOGIN_REDIRECT_URL = 'blog:profile'
 LOGOUT_REDIRECT_URL = 'blog:login'
+
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

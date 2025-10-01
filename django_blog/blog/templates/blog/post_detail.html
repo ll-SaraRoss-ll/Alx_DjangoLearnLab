@@ -13,6 +13,12 @@
       None
     {% endfor %}
   </p>
+  {% if post.author == user %}
+    <p>
+      <a href="{% url 'blog:post-update' post.pk %}">Edit</a> |
+      <a href="{% url 'blog:post-delete' post.pk %}">Delete</a>
+    </p>
+  {% endif %}
 </article>
 
 <hr>
