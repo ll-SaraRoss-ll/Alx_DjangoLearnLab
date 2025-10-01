@@ -124,3 +124,14 @@ Tests cover authentication flows, post CRUD, and comments.
 - Permissions:
   - Only authenticated users can post comments.  
   - Only comment authors can edit or delete their comments.  
+
+## Features: Tagging & Search
+
+- Assign comma-separated tags to posts via the post form.  
+- Browse posts by tag at `/tags/<tag_name>/`.  
+- Search title, content, or tag names via `/search/?q=keyword`.
+
+## URL Endpoints
+
+- `/tags/<tag_name>/` – View all posts with the given tag.  
+- `/search/?q=<keyword>` – Search posts by keyword or tag.

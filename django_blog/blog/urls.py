@@ -8,6 +8,8 @@ from .views import (
     CommentCreateView, post_detail,
     CommentUpdateView, CommentDeleteView
 )
+from .views import TagPostListView, SearchResultsView
+
 app_name = 'blog'
 
 urlpatterns = [
@@ -56,4 +58,10 @@ urlpatterns = [
       CommentDeleteView.as_view(),
       name='comment-delete'
     ),
+
+    # View all posts tagged with <tag_name>
+    path('tags/<str:tag_name>/', TagPostListView.as_view(), name='tag-posts'),
+
+    # Search posts by keyword or tag
+    path('search/', SearchResultsView.as_view(), name='search'),
 ]

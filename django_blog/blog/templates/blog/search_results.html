@@ -1,0 +1,5 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+  <h1>Search Results for “{{ request.GET.q }}”</h1>
+  {% include 'blog/post_list.html' %}
+{% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Tag
 from .models import Comment
 
 class CommentForm(forms.ModelForm):
@@ -12,9 +12,26 @@ class CommentForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'rows': 3})
         }
 class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        required=False,
+        help_text='Comma-separate tags (e.g. django, python)'
+    )
+
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        raw = self.cleaned_data.get('tags', '')
+        names = [n.strip() for n in raw.split(',') if n.strip()]
+        if commit:
+            instance.save()
+            instance.tags.clear()
+            for name in names:
+                tag, _ = Tag.objects.get_or_create(name=name)
+                instance.tags.add(tag)
+        return instance
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
