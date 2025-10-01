@@ -17,6 +17,9 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
 
     path('post/new/', PostCreateView.as_view(), name='post-create'),
+    path('posts/', PostListView.as_view(), name='post-list'),
+    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+
     path(
         'post/<int:pk>/',
         post_detail,
@@ -32,17 +35,21 @@ urlpatterns = [
         PostDeleteView.as_view(),
         name='post-delete'
     ),
+    
     # Comment CRUD
+    # 1. Create comment under a single post
     path(
       'posts/<int:post_pk>/comments/new/',
       CommentCreateView.as_view(),
       name='comment-create'
     ),
+    # 2. Update an existing comment
     path(
-        'comments/<int:pk>/edit/',
+        'comments/<int:pk>/update/',
         CommentUpdateView.as_view(),
         name='comment-update'
     ),
+    # 3. Delete an existing comment
     path(
         'comments/<int:pk>/delete/',
         CommentDeleteView.as_view(),
