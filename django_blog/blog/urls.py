@@ -5,7 +5,7 @@ from .views import (
     PostCreateView, PostUpdateView, PostDeleteView
 )
 from .views import (
-    post_detail,
+    CommentCreateView, post_detail,
     CommentUpdateView, CommentDeleteView
 )
 app_name = 'blog'
@@ -34,9 +34,9 @@ urlpatterns = [
     ),
     # Comment CRUD
     path(
-        'posts/<int:post_pk>/comments/new/',
-        post_detail,
-        name='comment-create'
+      'posts/<int:post_pk>/comments/new/',
+      CommentCreateView.as_view(),
+      name='comment-create'
     ),
     path(
         'comments/<int:pk>/edit/',

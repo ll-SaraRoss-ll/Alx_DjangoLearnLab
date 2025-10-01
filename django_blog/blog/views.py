@@ -7,10 +7,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .forms import UserRegisterForm, UserUpdateForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import (
-    ListView, DetailView,
-    CreateView, UpdateView, DeleteView
-)
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
 from .models import Post, Comment
 from .forms import PostForm
 from .forms import CommentForm
@@ -105,6 +103,20 @@ def post_detail(request, pk):
         'comments': comments,
         'form': form
     })
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
