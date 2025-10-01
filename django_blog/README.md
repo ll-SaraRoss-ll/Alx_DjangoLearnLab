@@ -110,3 +110,17 @@ Tests cover authentication flows, post CRUD, and comments.
 - Anyone can browse and read posts.
 - Only authenticated users can create posts.
 - Only the author of a post can edit or delete it.
+
+## Comment System
+
+- Model: `Comment` links to `Post` and `User`, with timestamps.  
+- Views:
+  - Inline creation on post detail (`posts/<pk>/comments/new/`).  
+  - Edit (`comments/<pk>/edit/`) and delete (`comments/<pk>/delete/`) via mixins.  
+- Templates:
+  - Comments shown on `post_detail.html`, with edit/delete links.  
+  - `comment_form.html` for editing.  
+  - `comment_confirm_delete.html` for deletion confirmation.  
+- Permissions:
+  - Only authenticated users can post comments.  
+  - Only comment authors can edit or delete their comments.  
