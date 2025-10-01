@@ -140,7 +140,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.get_object().author == self.request.user
     
-    class TagPostListView(ListView):
+class TagPostListView(ListView):
     model = Post
     template_name = 'blog/tag_post_list.html'
     context_object_name = 'posts'
