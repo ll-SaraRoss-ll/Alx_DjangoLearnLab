@@ -1,4 +1,6 @@
 #from django.shortcuts import render
+from rest_framework import generics, permissions
+from django.contrib.auth import  get_user_model
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Post, Comment
@@ -23,3 +25,13 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+class FeedListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PostSerializer
+    pagination_class = None  # or use global pagination
+
+    def get_queryset(self):
+        user = self.request.user
+        followed_users = user.following.all()
+        return Post.objects.filter(author__in=followed_users).order_by('-created_at')

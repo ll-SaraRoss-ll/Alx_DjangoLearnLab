@@ -29,3 +29,14 @@ Request bodies must include username and password. Registration accepts optional
 - profile_picture: Image upload
 
 - followers: Self-referential many-to-many
+
+## Endpoints, required auth:
+- Follow: POST /api/auth/follow/5/ Authorization: Token <token>
+
+- Unfollow: POST /api/auth/unfollow/5/
+
+- Followers list: GET /api/auth/5/followers/
+
+- Feed: GET /api/feed/ (returns posts from users you follow, newest first)
+
+Model change note: added self-referential ManyToMany field to User for follows; run migrations.

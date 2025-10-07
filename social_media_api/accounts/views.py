@@ -1,10 +1,14 @@
-#from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import RegistrationSerializer, LoginSerializer, ProfileSerializer
 
+User = get_user_model()
+
 # Create your views here.
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
 
@@ -22,3 +26,29 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_objects(self):
         return self.request.user
+    
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        target = get_object_or_404(User, id=user_id)
+        if target == request.user:
+            return Response({"detail":"Cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.add(target)
+        return Response({"detail":"followed"}, status=status.HTTP_200_OK)
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        target = get_object_or_404(User, id=user_id)
+        request.user.following.remove(target)
+        return Response({"detail":"unfollowed"}, status=status.HTTP_200_OK)
+
+class FollowersListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        user = get_object_or_404(User, id=self.kwargs['user_id'])
+        return user.followers.all()

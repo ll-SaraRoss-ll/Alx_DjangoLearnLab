@@ -10,6 +10,6 @@ class User(AbstractUser):
         related_name='following',
         blank=True
     )
-
-    def __str__(self):
-        return self.username
+    @property
+    def follow_count(self):
+        return self.following.count()

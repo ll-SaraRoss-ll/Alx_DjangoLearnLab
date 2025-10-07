@@ -36,9 +36,16 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials')
         token, _ = Token.objects.get_or_create(user=user)
         return {'username': user.username, 'token': token.key}
-    
+
+class FollowActionSerializer(serializers.Serializer):
+    target_user_id = serializers.IntegerField()
+
 class ProfileSerializer(serializers.ModelSerializer):
+    followers_count = serializers.IntegerField(source='followers.count', read_only=True)
+    following_count = serializers.IntegerField(source='following.count', read_only=True)
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'bio', 'profile_picture')
-        read_only_fields = ('username', 'email')
+        fields = ('username', 'email', 'bio', 'profile_picture', 'followers_count', 'following_count')
+        read_only_fields = ('id', 'username', 'email','followers_count', 'following_count')
+    
