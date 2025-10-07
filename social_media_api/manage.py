@@ -2,7 +2,11 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from dotenv import load_dotenv
 
+load_dotenv()  # Load .env file
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'social_media_api.settings.production')
 
 def main():
     """Run administrative tasks."""
