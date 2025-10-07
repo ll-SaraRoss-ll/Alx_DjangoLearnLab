@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import RegistrationSerializer, LoginSerializer, ProfileSerializer
@@ -28,7 +28,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
     
 class FollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         target = get_object_or_404(User, id=user_id)
@@ -38,7 +38,7 @@ class FollowUserView(generics.GenericAPIView):
         return Response({"detail":"followed"}, status=status.HTTP_200_OK)
 
 class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         target = get_object_or_404(User, id=user_id)
@@ -46,7 +46,7 @@ class UnfollowUserView(generics.GenericAPIView):
         return Response({"detail":"unfollowed"}, status=status.HTTP_200_OK)
 
 class FollowersListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
 
     def get_queryset(self):
