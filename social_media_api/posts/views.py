@@ -1,11 +1,16 @@
 #from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from django.contrib.auth import  get_user_model
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Post, Comment
+from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .serializers import LikeSerializer
+from notifications.utils import create_notification_for_like
 
 CustomUser = get_user_model()
 # Create your views here.
@@ -36,3 +41,28 @@ class FeedListView(generics.ListAPIView):
         user = self.request.user
         following_users = self.request.user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+    
+class PostLikeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        user = request.user
+        if Like.objects.filter(user=user, post=post).exists():
+            return Response({'detail': 'Already liked'}, status=status.HTTP_400_BAD_REQUEST)
+        like = Like.objects.create(user=user, post=post)
+        create_notification_for_like(actor=user, recipient=post.author, post=post)
+        serializer = LikeSerializer(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class PostUnlikeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        user = request.user
+        like = Like.objects.filter(user=user, post=post).first()
+        if not like:
+            return Response({'detail': 'Like does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

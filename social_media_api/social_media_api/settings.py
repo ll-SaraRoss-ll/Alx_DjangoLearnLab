@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', #token authentication
     'accounts', #User app
     'posts',
+    'notifications',
 ]
 
 REST_FRAMEWORK = {
