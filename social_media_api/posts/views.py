@@ -11,8 +11,11 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .serializers import LikeSerializer
 from notifications.utils import create_notification_for_like
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 
 CustomUser = get_user_model()
+
 # Create your views here.
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
@@ -46,15 +49,26 @@ class PostLikeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
-        if Like.objects.filter(user=user, post=post).exists():
+
+        like, created = Like.objects.get_or_create(user=user, post=post)
+        if not created:
             return Response({'detail': 'Already liked'}, status=status.HTTP_400_BAD_REQUEST)
-        like = Like.objects.create(user=user, post=post)
-        create_notification_for_like(actor=user, recipient=post.author, post=post)
+
+        # create notification for the post author (do not notify self)
+        if post.author != user:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=user,
+                verb='liked your post',
+                target_content_type=ContentType.objects.get_for_model(post),
+                target_object_id=str(post.pk)
+            )
+
         serializer = LikeSerializer(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+    
 class PostUnlikeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
