@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+PORT = int(os.environ.get("PORT", os.environ.get("APP_PORT", 8000)))
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key")
 DEBUG = True
