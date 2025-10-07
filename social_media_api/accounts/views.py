@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import RegistrationSerializer, LoginSerializer, ProfileSerializer
 
-User = get_user_model()
+CustomUser = get_user_model()
 
 # Create your views here.
 
@@ -50,5 +50,6 @@ class FollowersListView(generics.ListAPIView):
     serializer_class = ProfileSerializer
 
     def get_queryset(self):
+        _all = CustomUser.objects.all()
         user = get_object_or_404(User, id=self.kwargs['user_id'])
         return user.followers.all()
