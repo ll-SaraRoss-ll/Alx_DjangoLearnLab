@@ -12,7 +12,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password', 'bio', 'profile_picture')
     
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email'),
             password=validated_data['password'],
@@ -36,3 +36,9 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid credentials')
         token, _ = Token.objects.get_or_create(user=user)
         return {'username': user.username, 'token': token.key}
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'bio', 'profile_picture')
+        read_only_fields = ('username', 'email')
